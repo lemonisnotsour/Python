@@ -1,0 +1,78 @@
+import pygame
+import random
+pygame.init()
+
+WIDTH = 800
+HEIGHT = 600
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("My Game")
+running = True
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    
+    # Update game state
+    # Draw game objects
+    pygame.display.update()
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((50, 50))
+        self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect()
+        self.rect.center = (WIDTH // 2, HEIGHT - 50)
+
+class Ball(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((25, 25))
+        self.image.fill((0, 255, 0))
+        self.rect = self.image.get_rect()
+        self.rect.center = (random.randint(0, WIDTH), 0)
+        self.speed = random.randint(5, 10)
+    
+    def update(self):
+        self.rect.move_ip(0, self.speed)
+        if self.rect.bottom > HEIGHT:
+            self.kill()
+player = Player()
+balls = pygame.sprite.Group()
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    
+    # Update game state
+    balls.update()
+    if pygame.sprite.spritecollide(player, balls, True):
+        print("You caught the ball!")
+    
+    # Draw game objects
+    screen.fill((255, 255, 255))
+    screen.blit(player.image, player.rect)
+    balls.draw(screen)
+    pygame.display.update()
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                player.rect.move_ip(-10, 0)
+            elif event.key == pygame.K_RIGHT:
+                player.rect.move_ip(10, 0)
+    
+    # Update game state
+    balls.update()
+    if pygame.sprite.spritecollide(player, balls, True):
+        print("You caught the ball!")
+    
+    # Draw game objects
+    screen.fill((255, 255, 255))
+    screen.blit(player.image, player.rect)
+    balls.draw(screen)
+    pygame.display.update()
